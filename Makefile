@@ -6,4 +6,5 @@ mongodb:
 	@./mongodb.sh
 read:
 	@./read.sh
-
+shell:
+	@make/lol.sh
