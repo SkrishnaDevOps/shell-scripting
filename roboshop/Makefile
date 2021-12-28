@@ -9,14 +9,14 @@ help:
 		printf "%-15s %s\n" $$help_command $$help_info ; \
 	done
 
-cart:
+cart: ## cart
 	@bash components/cart.sh
 
-catalogue:
+catalogue: ## Catalogue
 	@bash components/catalogue.sh
 
-mongodb:
+mongodb:  ##mongodb
 	@bash components/mongodb.sh
 
-read:
+read:  ##read
 	@bash components/read.sh
