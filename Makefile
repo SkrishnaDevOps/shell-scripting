@@ -1,7 +1,7 @@
 cart:
 	@./cart.sh
 catalogue:
-	@./catlogeue.sh
+	@./catalogue.sh
 mongodb:
 	@./mongodb.sh
 read:
