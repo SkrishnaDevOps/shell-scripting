@@ -11,7 +11,7 @@ help:
 
 
 cart: ## Setup cart Componenet
-	@ bash components/cart.sh
+	@bash components/cart.sh
 
 catalogue: ## Setup catalogue Component
 	@bash components/catalogue.sh
