@@ -1,1 +1,1 @@
-echo "This is a mongodb file"
+echo "mongodb"

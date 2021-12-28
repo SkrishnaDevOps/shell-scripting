@@ -1,1 +1,1 @@
-echo "shell file"
+echo "shell"

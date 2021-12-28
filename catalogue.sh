@@ -1,1 +1,1 @@
-echo "This is a Catalogue file"
+echo "catalogue"
