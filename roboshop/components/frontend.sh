@@ -1,41 +1,26 @@
 #!/bin/bash
 
+# source is nothing but import , like export command
 source components/common.sh
-MSPACE=$(cat $0 | grep Print | awk -F '"' '{print $2}' | awk '{ print length }' | sort | tail -1)
 
+yum install nginx -y &>>${LOG_FILE}
+STAT_CHECK $? "Nginx Installation"
 
-Print "Installing Nginx"
-yum install nginx -y &>>$LOG
-Stat $?
+DOWNLOAD frontend
 
-Print "Download Html Pages"
-curl -s -L -o /tmp/frontend.zip "https://github.com/roboshop-devops-project/frontend/archive/main.zip" &>>$LOG
-Stat $?
+rm -rf /usr/share/nginx/html/*
+STAT_CHECK $? "Remove old HTML Pages"
 
-Print "Remove Old Html Pages"
-rm -rf /usr/share/nginx/html/* &>>$LOG
-Stat $?
+cd  /tmp/frontend-main/static/ && cp -r * /usr/share/nginx/html/
+STAT_CHECK $? "Copying Frontend Content"
 
-Print "Extract Frontend Archive"
-unzip -o -d /tmp /tmp/frontend.zip &>>$LOG
-Stat $?
+cp /tmp/frontend-main/localhost.conf /etc/nginx/default.d/roboshop.conf
+STAT_CHECK $? "Copy Nginx Config File"
 
-Print "Copy files to Nginx path"
-mv /tmp/frontend-main/static/* /usr/share/nginx/html/. &>>$LOG
-Stat $?
+for component in catalogue cart user shipping payment ; do
+  sed -i -e "/${component}/ s/localhost/${component}.roboshop.internal/" /etc/nginx/default.d/roboshop.conf
+done
+STAT_CHECK $? "Update Nginx Config File"
 
-Print "Copy Nginx Roboshop Config file"
-cp /tmp/frontend-main/localhost.conf /etc/nginx/default.d/roboshop.conf  &>>$LOG
-Stat $?
-
-Print "Update Nginx Config file"
-sed -i -e '/catalogue/ s/localhost/catalogue.roboshop.internal/' -e '/cart/ s/localhost/cart.roboshop.internal/'  -e '/user/ s/localhost/user.roboshop.internal/'  -e '/payment/ s/localhost/payment.roboshop.internal/'  -e '/shipping/ s/localhost/shipping.roboshop.internal/'   /etc/nginx/default.d/roboshop.conf  &>>$LOG
-Stat $?
-
-Print "Enabling Nginx"
-systemctl enable nginx &>>$LOG
-Stat $?
-
-Print "Starting Nginx"
-systemctl restart nginx &>>$LOG
-Stat $?
+systemctl enable nginx &>>${LOG_FILE} && systemctl restart nginx &>>${LOG_FILE}
+STAT_CHECK $? "Restart Nginx"
